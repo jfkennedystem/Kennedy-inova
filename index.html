@@ -1,540 +1,404 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kennedy Innova — Nodos Inalámbricos</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --bg: #0a1628;
-      --bg2: #0f1f3d;
-      --card: #112240;
-      --border: #1e3a5f;
-      --accent: #00d4ff;
-      --green: #00ff88;
-      --yellow: #ffd700;
-      --orange: #ff6b35;
-      --red: #ff2d55;
-      --text: #ccd6f6;
-      --text2: #8892b0;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Exo 2', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* Fondo animado */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background:
-        radial-gradient(ellipse at 20% 20%, rgba(0,212,255,0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(0,255,136,0.04) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-    /* HEADER */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 0 30px;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 30px;
-    }
-
-    .logo-area { display: flex; align-items: center; gap: 16px; }
-
-    .logo-circle {
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      border: 2px solid var(--accent);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 11px; font-weight: 700;
-      color: var(--accent);
-      text-align: center;
-      line-height: 1.2;
-      box-shadow: 0 0 20px rgba(0,212,255,0.3);
-    }
-
-    h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(14px, 2vw, 20px);
-      font-weight: 700;
-      color: var(--accent);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    h1 span { color: var(--text2); font-weight: 300; font-size: 0.7em; display: block; margin-top: 4px; letter-spacing: 3px; }
-
-    .status-bar {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 12px; color: var(--text2);
-    }
-
-    .status-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px var(--green);
-      animation: blink 2s infinite;
-    }
-
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    /* GRID AULAS */
-    .aulas-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      margin-bottom: 24px;
-    }
-
-    .aula-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-
-    .aula-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-
-    .aula-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--accent);
-      transition: background 0.5s;
-    }
-
-    .aula-card.verde::before { background: var(--green); }
-    .aula-card.amarillo::before { background: var(--yellow); }
-    .aula-card.naranja::before { background: var(--orange); }
-    .aula-card.rojo::before { background: var(--red); }
-
-    .aula-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .aula-nombre {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 13px; font-weight: 700;
-      color: var(--text2); letter-spacing: 2px;
-    }
-
-    .badge {
-      font-size: 11px; font-weight: 600;
-      padding: 3px 10px; border-radius: 20px;
-      letter-spacing: 1px;
-      transition: all 0.5s;
-    }
-
-    .badge.excelente { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid var(--green); }
-    .badge.aceptable { background: rgba(255,215,0,0.15); color: var(--yellow); border: 1px solid var(--yellow); }
-    .badge.deficiente { background: rgba(255,107,53,0.15); color: var(--orange); border: 1px solid var(--orange); }
-    .badge.peligroso { background: rgba(255,45,85,0.15); color: var(--red); border: 1px solid var(--red); }
-
-    .sensor-row {
-      display: flex; align-items: flex-end; gap: 16px;
-      margin-bottom: 16px;
-    }
-
-    /* BARRA VERTICAL */
-    .barra-container {
-      width: 28px;
-      height: 120px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 8px;
-      overflow: hidden;
-      position: relative;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .barra-fill {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      border-radius: 6px;
-      transition: height 1s ease, background 1s ease;
-    }
-
-    .valor-area { flex: 1; }
-
-    .ppm-valor {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 42px; font-weight: 900;
-      line-height: 1;
-      transition: color 0.5s;
-    }
-
-    .ppm-unidad {
-      font-size: 13px; color: var(--text2);
-      letter-spacing: 2px; margin-top: 4px;
-    }
-
-    .timestamp {
-      font-size: 11px; color: var(--text2);
-      margin-top: 8px;
-      display: flex; align-items: center; gap: 6px;
-    }
-
-    .timestamp::before {
-      content: '⏱';
-      font-size: 10px;
-    }
-
-    /* MINI GAUGE */
-    .gauge-track {
-      height: 4px;
-      background: rgba(255,255,255,0.07);
-      border-radius: 4px;
-      margin-top: 12px;
-      overflow: hidden;
-    }
-
-    .gauge-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 1s ease, background 1s ease;
-    }
-
-    /* SECCIÓN IA */
-    .ia-section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .ia-section::after {
-      content: 'AI';
-      position: absolute;
-      right: 24px; top: 50%;
-      transform: translateY(-50%);
-      font-family: 'Orbitron', sans-serif;
-      font-size: 80px; font-weight: 900;
-      color: rgba(0,212,255,0.04);
-      pointer-events: none;
-    }
-
-    .ia-header {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .ia-icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: rgba(0,212,255,0.1);
-      border: 1px solid rgba(0,212,255,0.3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-    }
-
-    .ia-title {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 13px; color: var(--accent);
-      letter-spacing: 2px;
-    }
-
-    .ia-subtitle { font-size: 11px; color: var(--text2); margin-top: 2px; }
-
-    .ia-texto {
-      font-size: 14px; line-height: 1.7;
-      color: var(--text);
-      min-height: 60px;
-      padding: 16px;
-      background: rgba(0,0,0,0.2);
-      border-radius: 10px;
-      border-left: 3px solid var(--accent);
-    }
-
-    .ia-texto.cargando { color: var(--text2); font-style: italic; }
-
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding-top: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--text2);
-    }
-
-    .kennedy-badge {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: 2px;
-    }
-
-    /* Animación entrada */
-    .aula-card { animation: fadeUp 0.6s ease both; }
-    .aula-card:nth-child(1) { animation-delay: 0.1s; }
-    .aula-card:nth-child(2) { animation-delay: 0.2s; }
-    .aula-card:nth-child(3) { animation-delay: 0.3s; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .update-flash { animation: flash 0.5s ease; }
-    @keyframes flash { 0%,100%{opacity:1} 50%{opacity:0.4} }
-  </style>
-</head>
-<body>
-<div class="container">
-
-  <header>
-    <div class="logo-area">
-      <div class="logo-circle">KENNEDY<br>INNOVA</div>
-      <div>
-        <h1>Nodos Inalámbricos de Aire
-          <span>Institución Educativa John F. Kennedy — Popayán</span>
-        </h1>
-      </div>
-    </div>
-    <div class="status-bar">
-      <div class="status-dot"></div>
-      <span id="ultimaActualizacion">Conectando...</span>
-    </div>
-  </header>
-
-  <div class="aulas-grid">
-    <!-- Aula 1 -->
-    <div class="aula-card" id="card-aula1">
-      <div class="aula-header">
-        <span class="aula-nombre">AULA 1</span>
-        <span class="badge" id="badge-aula1">—</span>
-      </div>
-      <div class="sensor-row">
-        <div class="barra-container">
-          <div class="barra-fill" id="barra-aula1" style="height:0%; background: var(--green);"></div>
-        </div>
-        <div class="valor-area">
-          <div class="ppm-valor" id="valor-aula1">—</div>
-          <div class="ppm-unidad">PPM CO₂</div>
-          <div class="timestamp" id="time-aula1">Sin datos</div>
-        </div>
-      </div>
-      <div class="gauge-track">
-        <div class="gauge-fill" id="gauge-aula1" style="width:0%;"></div>
-      </div>
-    </div>
-
-    <!-- Aula 2 -->
-    <div class="aula-card" id="card-aula2">
-      <div class="aula-header">
-        <span class="aula-nombre">AULA 2</span>
-        <span class="badge" id="badge-aula2">—</span>
-      </div>
-      <div class="sensor-row">
-        <div class="barra-container">
-          <div class="barra-fill" id="barra-aula2" style="height:0%; background: var(--green);"></div>
-        </div>
-        <div class="valor-area">
-          <div class="ppm-valor" id="valor-aula2">—</div>
-          <div class="ppm-unidad">PPM CO₂</div>
-          <div class="timestamp" id="time-aula2">Sin datos</div>
-        </div>
-      </div>
-      <div class="gauge-track">
-        <div class="gauge-fill" id="gauge-aula2" style="width:0%;"></div>
-      </div>
-    </div>
-
-    <!-- Aula 3 -->
-    <div class="aula-card" id="card-aula3">
-      <div class="aula-header">
-        <span class="aula-nombre">AULA 3</span>
-        <span class="badge" id="badge-aula3">—</span>
-      </div>
-      <div class="sensor-row">
-        <div class="barra-container">
-          <div class="barra-fill" id="barra-aula3" style="height:0%; background: var(--green);"></div>
-        </div>
-        <div class="valor-area">
-          <div class="ppm-valor" id="valor-aula3">—</div>
-          <div class="ppm-unidad">PPM CO₂</div>
-          <div class="timestamp" id="time-aula3">Sin datos</div>
-        </div>
-      </div>
-      <div class="gauge-track">
-        <div class="gauge-fill" id="gauge-aula3" style="width:0%;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sección IA -->
-  <div class="ia-section">
-    <div class="ia-header">
-      <div class="ia-icon">🤖</div>
-      <div>
-        <div class="ia-title">Recomendación IA</div>
-        <div class="ia-subtitle">Groq · LLaMA 3.3 · Actualización automática</div>
-      </div>
-    </div>
-    <div class="ia-texto cargando" id="ia-texto">⏳ Esperando datos de los sensores...</div>
-  </div>
-
-  <footer>
-    <span class="kennedy-badge">KENNEDY INNOVA · STEM+</span>
-    <span>Datos en tiempo real vía Firebase · Popayán, Colombia</span>
-  </footer>
-
-</div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  // ── Configuración Firebase ──────────────────────────────────────────────
-  const firebaseConfig = {
-    databaseURL: "https://kennedy-innova-default-rtdb.firebaseio.com"
-  };
-
-  // ── Configuración Groq ──────────────────────────────────────────────────
-  // *** REEMPLAZA CON TU API KEY DE GROQ ***
-  const GROQ_API_KEY = "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";
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  let datosActuales = { aula1: null, aula2: null, aula3: null };
-  let ultimaConsultaIA = 0;
-
-  // ── Función: obtener color y estado según PPM ───────────────────────────
-  function getEstado(ppm) {
-    if (ppm <= 700)  return { color: '#00ff88', clase: 'verde',    badge: 'excelente', texto: '✅ EXCELENTE' };
-    if (ppm <= 1000) return { color: '#ffd700', clase: 'amarillo', badge: 'aceptable', texto: '🟡 ACEPTABLE' };
-    if (ppm <= 2000) return { color: '#ff6b35', clase: 'naranja',  badge: 'deficiente', texto: '🟠 DEFICIENTE' };
-    return           { color: '#ff2d55', clase: 'rojo',     badge: 'peligroso', texto: '🔴 PELIGROSO' };
-  }
-
-  // ── Función: actualizar card de un aula ────────────────────────────────
-  function actualizarAula(id, datos) {
-    if (!datos) return;
-    const ppm = datos.ppm || 0;
-    const estado = getEstado(ppm);
-    const porcentaje = Math.min((ppm / 2000) * 100, 100);
-
-    // Valores
-    document.getElementById(`valor-${id}`).textContent = ppm;
-    document.getElementById(`valor-${id}`).style.color = estado.color;
-    document.getElementById(`time-${id}`).textContent = datos.timestamp || '';
-
-    // Barra vertical
-    const barra = document.getElementById(`barra-${id}`);
-    barra.style.height = porcentaje + '%';
-    barra.style.background = estado.color;
-    barra.style.boxShadow = `0 0 10px ${estado.color}80`;
-
-    // Gauge horizontal
-    const gauge = document.getElementById(`gauge-${id}`);
-    gauge.style.width = porcentaje + '%';
-    gauge.style.background = estado.color;
-
-    // Badge
-    const badge = document.getElementById(`badge-${id}`);
-    badge.textContent = estado.texto;
-    badge.className = `badge ${estado.badge}`;
-
-    // Card color top border
-    const card = document.getElementById(`card-${id}`);
-    card.className = `aula-card ${estado.clase}`;
-    card.classList.add('update-flash');
-    setTimeout(() => card.classList.remove('update-flash'), 500);
-  }
-
-  // ── Función: consultar Groq ─────────────────────────────────────────────
-  async function consultarGroq() {
-    const { aula1, aula2, aula3 } = datosActuales;
-    if (!aula1 && !aula2 && !aula3) return;
-
-    const ahora = Date.now();
-    if (ahora - ultimaConsultaIA < 60000) return; // Cada 60 segundos
-    ultimaConsultaIA = ahora;
-
-    const iaTexto = document.getElementById('ia-texto');
-    iaTexto.textContent = '⏳ Consultando recomendación...';
-    iaTexto.className = 'ia-texto cargando';
-
-    const prompt = `Datos de calidad del aire en las aulas de la Institución Educativa John F. Kennedy en Popayán, Colombia:
-- Aula 1: ${aula1?.ppm || 'sin datos'} PPM de CO₂
-- Aula 2: ${aula2?.ppm || 'sin datos'} PPM de CO₂  
-- Aula 3: ${aula3?.ppm || 'sin datos'} PPM de CO₂
-
-Rangos: 0-700 Excelente, 700-1000 Aceptable, 1000-2000 Deficiente, +2000 Peligroso.
-Da una recomendación concreta y breve (máximo 4 líneas) sobre cómo manejar la ventilación en cada aula y si hay alguna acción urgente.`;
-
-    try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${GROQ_API_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: [{ role: 'user', content: prompt }],
-          max_tokens: 300,
-          temperature: 0.5
-        })
-      });
-
-      const data = await response.json();
-      const texto = data.choices?.[0]?.message?.content || 'No se pudo obtener recomendación.';
-      iaTexto.textContent = texto;
-      iaTexto.className = 'ia-texto';
-    } catch (err) {
-      iaTexto.textContent = '❌ Error al consultar la IA: ' + err.message;
-      iaTexto.className = 'ia-texto';
-    }
-  }
-
-  // ── Escuchar Firebase en tiempo real ────────────────────────────────────
-  const aulasRef = ref(db, 'aulas');
-  onValue(aulasRef, (snapshot) => {
-    const datos = snapshot.val();
-    if (!datos) return;
-
-    datosActuales = {
-      aula1: datos.aula1 || null,
-      aula2: datos.aula2 || null,
-      aula3: datos.aula3 || null
-    };
-
-    actualizarAula('aula1', datos.aula1);
-    actualizarAula('aula2', datos.aula2);
-    actualizarAula('aula3', datos.aula3);
-
-    document.getElementById('ultimaActualizacion').textContent =
-      'Actualizado: ' + new Date().toLocaleTimeString('es-CO');
-
-    consultarGroq();
-  });
-</script>
-</body>
-</html>
+Imports System.IO.Ports
+Imports System.Net.Http
+Imports System.Reflection.Emit
+Imports System.Text
+Imports Newtonsoft.Json
+
+
+Public Class Form1
+
+    ' ─── Puertos seriales ───────────────────────────────────────────────────
+    Dim WithEvents serialPort As IO.Ports.SerialPort = New IO.Ports.SerialPort()
+    Dim WithEvents serialPort1 As IO.Ports.SerialPort = New IO.Ports.SerialPort()
+    Dim contador As Integer
+
+    ' ─── IA: configuración Groq ─────────────────────────────────────────────
+    ' *** REEMPLAZA ESTE VALOR CON TU API KEY DE GROQ ***
+    Private Const GROQ_API_KEY As String = "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"
+    Private Const GROQ_URL As String = "https://api.groq.com/openai/v1/chat/completions"
+
+    Private timerIA As New Timer()
+    Private httpClient As New HttpClient()
+
+
+
+
+    ' ════════════════════════════════════════════════════════════════════════
+    '  CARGA DEL FORMULARIO
+    ' ════════════════════════════════════════════════════════════════════════
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        EnviarDatosFirebase()
+
+        Label3.BackColor = Color.Transparent
+        Me.WindowState = FormWindowState.Maximized
+        Me.FormBorderStyle = FormBorderStyle.FixedSingle
+        Recomendacion.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Bottom
+        ' ─── Anclar controles al redimensionar ───────────────────────────────────
+        PictureBox1.Anchor = AnchorStyles.Top Or AnchorStyles.Left
+        PictureBox2.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        TextBox3.Anchor = AnchorStyles.Top Or AnchorStyles.Left
+        TextBox1.Anchor = AnchorStyles.Top Or AnchorStyles.Right
+        Recomendacion.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Bottom
+        Button2.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        Button3.Anchor = AnchorStyles.Bottom Or AnchorStyles.Right
+
+        ' Configurar cabecera de autenticación para Groq
+        httpClient.DefaultRequestHeaders.Clear()
+        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " & GROQ_API_KEY)
+
+        Timer1.Interval = 10000
+        Timer1.Start()
+
+
+
+
+
+
+    End Sub
+
+
+    Private Sub ActualizarBarraPPM(valor As Integer)
+        ' Limitar valor al rango
+        If valor > 2000 Then valor = 2000
+        If valor < 0 Then valor = 0
+
+        ProgressBarPPM.Maximum = 2100
+        ProgressBarPPM.Minimum = 0
+        ProgressBarPPM.Value = valor
+
+        ' Actualizar etiqueta según nivel
+        If valor <= 700 Then
+            LabelEstado.Text = "✅ EXCELENTE"
+            LabelEstado.ForeColor = Color.FromArgb(0, 200, 0)
+        ElseIf valor <= 1000 Then
+            LabelEstado.Text = "🟡 ACEPTABLE"
+            LabelEstado.ForeColor = Color.FromArgb(200, 160, 0)
+        ElseIf valor <= 2000 Then
+            LabelEstado.Text = "🟠 DEFICIENTE"
+            LabelEstado.ForeColor = Color.FromArgb(255, 100, 0)
+        Else
+            LabelEstado.Text = "🔴 PELIGROSO"
+            LabelEstado.ForeColor = Color.FromArgb(220, 0, 0)
+        End If
+    End Sub
+
+    Private Sub ActualizarBarraPPM2(valor As Integer)
+        ' Limitar valor al rango
+        If valor > 2000 Then valor = 2000
+        If valor < 0 Then valor = 0
+
+        ProgressBarPPM1.Maximum = 2100
+        ProgressBarPPM1.Minimum = 0
+        ProgressBarPPM1.Value = valor
+
+        ' Actualizar etiqueta según nivel
+        If valor <= 700 Then
+            LabelEstado1.Text = "✅ EXCELENTE"
+            LabelEstado1.ForeColor = Color.FromArgb(0, 200, 0)
+        ElseIf valor <= 1000 Then
+            LabelEstado1.Text = "🟡 ACEPTABLE"
+            LabelEstado1.ForeColor = Color.FromArgb(200, 160, 0)
+        ElseIf valor <= 2000 Then
+            LabelEstado1.Text = "🟠 DEFICIENTE"
+            LabelEstado1.ForeColor = Color.FromArgb(255, 100, 0)
+        Else
+            LabelEstado1.Text = "🔴 PELIGROSO"
+            LabelEstado1.ForeColor = Color.FromArgb(220, 0, 0)
+        End If
+    End Sub
+
+    Private Sub ActualizarBarraPPM3(valor As Integer)
+        ' Limitar valor al rango
+        If valor > 2000 Then valor = 2000
+        If valor < 0 Then valor = 0
+
+        ProgressBarPPM2.Maximum = 2100
+        ProgressBarPPM2.Minimum = 0
+        ProgressBarPPM2.Value = valor
+
+        ' Actualizar etiqueta según nivel
+        If valor <= 700 Then
+            LabelEstado2.Text = "✅ EXCELENTE"
+            LabelEstado2.ForeColor = Color.FromArgb(0, 200, 0)
+        ElseIf valor <= 1000 Then
+            LabelEstado2.Text = "🟡 ACEPTABLE"
+            LabelEstado2.ForeColor = Color.FromArgb(200, 160, 0)
+        ElseIf valor <= 2000 Then
+            LabelEstado2.Text = "🟠 DEFICIENTE"
+            LabelEstado2.ForeColor = Color.FromArgb(255, 100, 0)
+        Else
+            LabelEstado2.Text = "🔴 PELIGROSO"
+            LabelEstado2.ForeColor = Color.FromArgb(220, 0, 0)
+        End If
+    End Sub
+
+    ' ════════════════════════════════════════════════════════════════════════
+    '  TIMER: consulta a Groq cada 60 segundos
+    ' ════════════════════════════════════════════════════════════════════════
+    Private Async Sub TimerIA_Tick(sender As Object, e As EventArgs)
+        Dim temperatura As String = TextBox1.Text.Trim()
+        Dim temperatura1 As String = TextBox4.Text.Trim()
+        Dim temperatura2 As String = TextBox2.Text.Trim()
+
+
+        ' Solo consultar si hay un valor de temperatura disponible
+        If String.IsNullOrEmpty(temperatura) OrElse temperatura = "0" Then
+            Exit Sub
+        End If
+
+        Recomendacion.Text = "⏳ Consultando recomendación a la IA..."
+
+        Try
+            Dim textoIA As String = Await ConsultarGroqAsync(temperatura, temperatura1, temperatura2)
+            Recomendacion.Text = textoIA
+        Catch ex As Exception
+            Recomendacion.Text = "❌ Error: " & ex.Message
+        End Try
+    End Sub
+
+    ' ─── Botón para consultar manualmente ───────────────────────────────────
+
+
+    ' ════════════════════════════════════════════════════════════════════════
+    '  FUNCIÓN: llama a la API de Groq
+    ' ════════════════════════════════════════════════════════════════════════
+    Private Async Function ConsultarGroqAsync(temperatura As String, temperatura1 As String, temperatura2 As String) As Task(Of String)
+        Dim prompt As String = $"Los niveles de CO2 en tres salones de clase son  salon de clases1 {temperatura} ppm, salon de clases2 {temperatura1} ppm, salon de clases3 {temperatura2} ppm.. " &
+                               "Basándote en estos tres valores, da una recomendación concreta y breve (máximo 4 líneas) " &
+                               "sobre cómo manejar la ventilación en los tres salones: si aumentar, reducir o mantener el flujo de aire, abrir ventanas " &
+                               "y si hay alguna acción urgente a tomar." & "Dame un nivel de alerta entre 1 a 10, especificando para que salon" & "Di quien eres"
+
+        ' Groq usa el mismo formato que OpenAI
+        Dim requestBody = New With {
+            .model = "llama-3.3-70b-versatile",
+            .messages = New Object() {
+                New With {
+                    .role = "user",
+                    .content = prompt
+                }
+            },
+            .max_tokens = 300,
+            .temperature = 0.5
+        }
+
+        Dim json As String = JsonConvert.SerializeObject(requestBody)
+        Dim content As New StringContent(json, Encoding.UTF8, "application/json")
+
+        Dim response As HttpResponseMessage = Await httpClient.PostAsync(GROQ_URL, content)
+
+        If Not response.IsSuccessStatusCode Then
+            Dim errorBody As String = Await response.Content.ReadAsStringAsync()
+            Return $"Error HTTP {response.StatusCode}: {errorBody}"
+        End If
+
+        Dim responseBody As String = Await response.Content.ReadAsStringAsync()
+
+        ' Parsear la respuesta de Groq (formato OpenAI)
+        Dim jsonResponse = JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(responseBody)
+        Dim choices = JsonConvert.DeserializeObject(Of List(Of Dictionary(Of String, Object)))(
+            jsonResponse("choices").ToString())
+        Dim message = JsonConvert.DeserializeObject(Of Dictionary(Of String, Object))(
+            choices(0)("message").ToString())
+
+        Return message("content").ToString()
+    End Function
+
+    ' ════════════════════════════════════════════════════════════════════════
+    '  PUERTOS SERIALES
+    ' ════════════════════════════════════════════════════════════════════════
+    Private Sub Conectarpuetoaire()
+        If ComboBox1.SelectedItem Is Nothing Then
+            MessageBox.Show("Selecciona un puerto COM primero.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+        If Not serialPort.IsOpen Then
+            serialPort.PortName = ComboBox1.SelectedItem.ToString()
+            serialPort.Open()
+        End If
+        Debug.WriteLine($"Puerto aire abierto: {serialPort.PortName} | BaudRate: {serialPort.BaudRate}")
+    End Sub
+
+    Private Sub Conectarpuetoagua()
+        If ComboBox1.SelectedItem Is Nothing Then
+            MessageBox.Show("Selecciona un puerto COM primero.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            Exit Sub
+        End If
+        If Not serialPort1.IsOpen Then
+            serialPort1.PortName = ComboBox1.SelectedItem.ToString()
+            serialPort1.Open()
+        End If
+        Debug.WriteLine($"Puerto agua abierto: {serialPort1.PortName} | BaudRate: {serialPort1.BaudRate}")
+    End Sub
+
+    Sub ObtenerPuertos()
+        ComboBox1.Items.Clear()
+        For Each puerto As String In IO.Ports.SerialPort.GetPortNames
+            ComboBox1.Items.Add(puerto)
+        Next
+        If ComboBox1.Items.Count > 0 Then
+            ComboBox1.SelectedIndex = 0
+        End If
+    End Sub
+
+    ' ════════════════════════════════════════════════════════════════════════
+    '  RECEPCIÓN DE DATOS SERIALES
+    ' ════════════════════════════════════════════════════════════════════════
+    Private Sub miPuerto1_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles serialPort.DataReceived
+        Dim datosRecibidos As String = serialPort.ReadExisting()
+        If TextBox1.InvokeRequired Then
+            TextBox1.Invoke(Sub() TextBox1.Text = Val(datosRecibidos) * 1.7)
+        Else
+            TextBox1.Text = Val(datosRecibidos) * 1.7
+        End If
+    End Sub
+
+    Private Sub miPuerto_DataReceived(sender As Object, e As SerialDataReceivedEventArgs) Handles serialPort1.DataReceived
+        Dim datosRecibidos1 As String = serialPort1.ReadExisting()
+        If TextBox3.InvokeRequired Then
+            TextBox3.Invoke(Sub() TextBox3.Text = Val(datosRecibidos1) / 100)
+        Else
+            TextBox3.Text = Val(datosRecibidos1) / 100
+        End If
+    End Sub
+
+    ' ════════════════════════════════════════════════════════════════════════
+    '  MENÚ Y NAVEGACIÓN
+    ' ════════════════════════════════════════════════════════════════════════
+    Private Sub BuacarPuertosToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BuacarPuertosToolStripMenuItem.Click
+        ObtenerPuertos()
+    End Sub
+
+    Private Sub ConectarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConectarToolStripMenuItem.Click
+        Conectarpuetoaire()
+    End Sub
+
+    Private Sub ConectarAguaToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConectarAguaToolStripMenuItem.Click
+        Conectarpuetoagua()
+    End Sub
+
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Form2.Show()
+        Me.Visible = False
+    End Sub
+
+    Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Me.Visible = False
+        Form3.Show()
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs)
+        Visible = False
+        Form4.Show()
+    End Sub
+
+    ' ════════════════════════════════════════════════════════════════════════
+    '  CIERRE: liberar recursos
+    ' ════════════════════════════════════════════════════════════════════════
+    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        timerIA.Stop()
+        If serialPort.IsOpen Then serialPort.Close()
+        If serialPort1.IsOpen Then serialPort1.Close()
+        httpClient.Dispose()
+    End Sub
+    Private Async Function EnviarAFirebase(aula1ppm As Double, aula2ppm As Double, aula3ppm As Double) As Task
+        Try
+            Using client As New HttpClient()
+
+                ' ─── Aula 1 ───────────────────────────────────────────
+                Dim url1 As String = "https://kennedy-innova-default-rtdb.firebaseio.com/aulas/aula1.json"
+                Dim datos1 As String = "{""ppm"": " & aula1ppm & ", ""timestamp"": """ & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & """}"
+                Dim content1 As New StringContent(datos1, Encoding.UTF8, "application/json")
+                Dim response1 = Await client.PutAsync(url1, content1)
+                Debug.WriteLine("Aula1: " & Await response1.Content.ReadAsStringAsync())
+
+                ' ─── Aula 2 ───────────────────────────────────────────
+                Dim url2 As String = "https://kennedy-innova-default-rtdb.firebaseio.com/aulas/aula2.json"
+                Dim datos2 As String = "{""ppm"": " & aula2ppm & ", ""timestamp"": """ & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & """}"
+                Dim content2 As New StringContent(datos2, Encoding.UTF8, "application/json")
+                Dim response2 = Await client.PutAsync(url2, content2)
+                Debug.WriteLine("Aula2: " & Await response2.Content.ReadAsStringAsync())
+
+                ' ─── Aula 3 ───────────────────────────────────────────
+                Dim url3 As String = "https://kennedy-innova-default-rtdb.firebaseio.com/aulas/aula3.json"
+                Dim datos3 As String = "{""ppm"": " & aula3ppm & ", ""timestamp"": """ & DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") & """}"
+                Dim content3 As New StringContent(datos3, Encoding.UTF8, "application/json")
+                Dim response3 = Await client.PutAsync(url3, content3)
+                Debug.WriteLine("Aula3: " & Await response3.Content.ReadAsStringAsync())
+
+            End Using
+
+        Catch ex As Exception
+            Debug.WriteLine("Error Firebase: " & ex.Message)
+        End Try
+    End Function
+
+
+
+    Private Async Sub EnviarDatosFirebase()
+        Try
+            Await EnviarAFirebase(Val(TextBox1.Text), Val(TextBox4.Text), Val(TextBox3.Text))
+            Debug.WriteLine("Firebase OK - datos enviados")
+        Catch ex As Exception
+            Debug.WriteLine("Error Firebase: " & ex.Message)
+        End Try
+    End Sub
+    Private Sub Timer1_Tick(sender As Object, e As EventArgs) Handles Timer1.Tick
+
+        'web 
+        EnviarDatosFirebase()
+
+
+
+        'fin we
+
+
+        If IsNumeric(TextBox1.Text) Then
+            ActualizarBarraPPM(CInt(Val(TextBox1.Text)))
+        End If
+
+        If IsNumeric(TextBox4.Text) Then
+            ActualizarBarraPPM2(CInt(Val(TextBox4.Text)))
+        End If
+
+        If IsNumeric(TextBox3.Text) Then
+            ActualizarBarraPPM3(CInt(Val(TextBox3.Text)))
+        End If
+
+        Dim temperatura As String = TextBox1.Text.Trim()
+        Dim temperatura1 As String = TextBox4.Text.Trim()
+        Dim temperatura2 As String = TextBox3.Text.Trim()
+        If String.IsNullOrEmpty(temperatura) OrElse temperatura = "0" Then
+            Exit Sub
+        End If
+        If String.IsNullOrEmpty(temperatura1) OrElse temperatura1 = "0" Then
+            Exit Sub
+        End If
+        If String.IsNullOrEmpty(temperatura2) OrElse temperatura2 = "0" Then
+            Exit Sub
+        End If
+
+        Recomendacion.Text = "⏳ Consultando recomendación a la IA..."
+
+        Task.Run(Async Function()
+                     Try
+                         Dim textoIA As String = Await ConsultarGroqAsync(temperatura, temperatura1, temperatura2)
+                         If Recomendacion.InvokeRequired Then
+                             Recomendacion.Invoke(Sub() Recomendacion.Text = textoIA)
+                         Else
+                             Recomendacion.Text = textoIA
+                         End If
+                     Catch ex As Exception
+                         If Recomendacion.InvokeRequired Then
+                             Recomendacion.Invoke(Sub() Recomendacion.Text = "❌ Error: " & ex.Message)
+                         Else
+                             Recomendacion.Text = "❌ Error: " & ex.Message
+                         End If
+                     End Try
+                 End Function)
+    End Sub
+
+    Private Sub GroupBox3_Enter(sender As Object, e As EventArgs) Handles GroupBox3.Enter
+
+    End Sub
+End Class
