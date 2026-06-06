@@ -906,7 +906,7 @@
 
   // ── Actualizar sección Ambiente ─────────────────────────────────────────
   function actualizarAmbiente(datos) {
-    // datos = { Hum: { '%': 50, timestamp: '...' }, temp: { C: 20, timestamp: '...' } }
+    // datos = { Hum: { 'porcentaje': 50, timestamp: '...' }, temp: { C: 20, timestamp: '...' } }
 
     const tempVal = datos?.temp?.C;
     const humVal  = datos?.Hum?.['%'];
