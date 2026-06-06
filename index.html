@@ -909,7 +909,7 @@
     // datos = { Hum: { 'porcentaje': 50, timestamp: '...' }, temp: { C: 20, timestamp: '...' } }
 
     const tempVal = datos?.temp?.C;
-    const humVal  = datos?.Hum?.['%'];
+    const humVal  = datos?.Hum?.porcentaje;
     const tempTs  = datos?.temp?.timestamp || '';
     const humTs   = datos?.Hum?.timestamp  || '';
 
